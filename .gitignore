@@ -74,6 +74,12 @@ docs/_build/
 # PyBuilder
 target/
 
+# vs code settings
+.vscode
+
+# datasets
+dataset
+
 # Jupyter Notebook
 .ipynb_checkpoints
 
