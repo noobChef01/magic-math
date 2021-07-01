@@ -1,9 +1,9 @@
 import os
 import pickle
 import argparse
+from tqdm import tqdm
 import xml.etree.ElementTree as ET
 from InkmlToImage import InkmlToImage
-from tqdm import tqdm
 
 
 def read_args():
@@ -28,12 +28,12 @@ def read_args():
 
 
 def load_required_classes():
-    # Load categories from `categories.txt` file
+    # load available categories from `categories.txt` file
     categories = [{'name': cat.split(':')[0], 'classes': cat.split(
         ':')[1].split()} for cat in list(open(os.path.join(args["data_path"], 'categories.txt'), 'r'))]
     category_names = [cat['name'] for cat in categories]
 
-    # Get classes that have to be extracted (based on categories selected by user)
+    # get user desired classes
     classes_to_extract = []
     for cat_name in args['category']:
         cat_idx = category_names.index(cat_name)
@@ -130,8 +130,7 @@ def apply_data_formatting(inkml_files, req_classes=None):
             if classes:
                 classes.update(classes)
         except Exception as e:
-            print(e)
-            continue
+            print("File corrupted, skip while processing.")
     return data, damaged_classes, classes
 
 
@@ -190,7 +189,7 @@ if __name__ == "__main__":
     if args["save_labels"]:
         classes = train_classes.union(test_classes)
         # Save all labels in 'classes.txt' file
-        with open(os.path.join(args["data_path"], 'classes.txt'), 'w') as f:
+        with open(os.path.join(args["data_path"], 'classes_for_model.txt'), 'w') as f:
             f.write("\n".join(classes))
             print('All classes that were extracted are listed in: {} file, in the path: {}'.format(
                 f.name, args["data_path"]))

@@ -1,0 +1,21 @@
+#!/usr/bin/bash
+while getopts k:d:u: flag
+do
+    case "${flag}" in
+        k) keyPath=${OPTARG};;
+        d) downloadPath=${OPTARG};;
+        u) unzip=${OPTARG};;
+    esac
+done
+
+if [ ! -d $HOME/.kaggle ];
+    then mkdir $HOME/.kaggle
+fi
+cp $keyPath $HOME/.kaggle/
+chmod 600 $HOME/.kaggle/kaggle.json
+
+kaggle datasets download -d "rtatman/handwritten-mathematical-expressions" -p $downloadPath
+
+if [ $unzip = true ]; 
+    then unzip -q $downloadPath/handwritten-mathematical-expressions.zip -d $downloadPath
+fi
